@@ -6,7 +6,7 @@
 **Simple embedded database on golang**
 
 
-description
+description(will be updated)
 
 
 <br clear="left"/>
@@ -14,3 +14,4 @@ description
 
 
 ## Introduction
+will be updated 

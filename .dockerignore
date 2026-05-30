@@ -1,0 +1,11 @@
+.git
+.gitignore
+*.md
+README.md
+LICENSE
+.env
+*.log
+data/
+*.db
+*.wal
+vendor/

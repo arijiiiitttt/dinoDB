@@ -1,0 +1,13 @@
+services:
+  dinodb:
+    build: .
+    container_name: dinodb
+    ports:
+      - "8080:8080"
+    volumes:
+      - dinodb_data:/data
+    stdin_open: true
+    tty: true
+
+volumes:
+  dinodb_data:

@@ -22,11 +22,20 @@ func New(db *engine.DB) *REPL {
 func (r *REPL) Run() {
 	scanner := bufio.NewScanner(os.Stdin)
 
+	const (
+		cyan  = "\033[36m"
+		bold  = "\033[1m"
+		dim   = "\033[2m"
+		reset = "\033[0m"
+	)
+
 	fmt.Println()
-	fmt.Println("GoDB Interactive Shell")
-	fmt.Println("Type SQL commands and press Enter.")
-	fmt.Println("Type .help for available commands, .exit to quit.")
-	fmt.Println(strings.Repeat("─", 52))
+	fmt.Println(bold + cyan + "  ╔══════════════════════════════════════════════════╗" + reset)
+	fmt.Println(bold + cyan + "  ║           dinoDB Interactive Shell               ║" + reset)
+	fmt.Println(bold + cyan + "  ╚══════════════════════════════════════════════════╝" + reset)
+	fmt.Println(dim + "  Type SQL commands and press Enter." + reset)
+	fmt.Println(dim + "  Type .help for available commands, .exit to quit." + reset)
+	fmt.Println()
 
 	for {
 		if r.tx != nil {
@@ -304,34 +313,74 @@ func printTable(columns []string, rows [][]string) {
 		}
 	}
 
-	sep := "+"
-	for _, w := range widths {
-		sep += strings.Repeat("-", w+2) + "+"
+	// Single-line Unicode box-drawing characters
+	const (
+		tl    = "┌"
+		tr    = "┐"
+		bl    = "└"
+		br    = "┘"
+		lm    = "├"
+		rm    = "┤"
+		tm    = "┬"
+		bm    = "┴"
+		cross = "┼"
+		hz    = "─"
+		vt    = "│"
+	)
+
+	// Build separator lines
+	buildLine := func(left, mid, right, fill string) string {
+		s := left
+		for i, w := range widths {
+			s += strings.Repeat(fill, w+2)
+			if i < len(widths)-1 {
+				s += mid
+			}
+		}
+		s += right
+		return s
 	}
 
-	fmt.Println(sep)
+	topLine    := buildLine(tl, tm, tr, hz)
+	headerSep  := buildLine(lm, cross, rm, hz)
+	bottomLine := buildLine(bl, bm, br, hz)
 
-	header := "|"
+	// ANSI colors
+	const (
+		bold   = "\033[1m"
+		cyan   = "\033[36m"
+		reset  = "\033[0m"
+		dim    = "\033[2m"
+	)
+
+	fmt.Println(cyan + topLine + reset)
+
+	// Header row
+	header := cyan + vt + reset
 	for i, col := range columns {
-		header += fmt.Sprintf(" %-*s |", widths[i], col)
+		header += bold + fmt.Sprintf(" %-*s ", widths[i], strings.ToUpper(col)) + reset
+		header += cyan + vt + reset
 	}
 	fmt.Println(header)
-	fmt.Println(sep)
+	fmt.Println(cyan + headerSep + reset)
 
+	// Data rows
 	for _, row := range rows {
-		line := "|"
+		line := cyan + vt + reset
 		for i := 0; i < len(columns); i++ {
 			cell := ""
 			if i < len(row) {
 				cell = row[i]
 			}
-			line += fmt.Sprintf(" %-*s |", widths[i], cell)
+			line += fmt.Sprintf(" %-*s ", widths[i], cell)
+			line += cyan + vt + reset
 		}
 		fmt.Println(line)
+
 	}
 
-	fmt.Println(sep)
-	fmt.Printf("%d row(s) returned\n\n", len(rows))
+	fmt.Println(cyan + bottomLine + reset)
+	fmt.Printf(dim+"  %d row(s) returned\n\n"+reset, len(rows))
 }
 
 func printStatus(status, message string) {
@@ -339,7 +388,10 @@ func printStatus(status, message string) {
 }
 
 func printError(msg string) {
-	fmt.Printf("\nERROR: %s\n\n", msg)
+	const red = "\033[31m"
+	const bold = "\033[1m"
+	const reset = "\033[0m"
+	fmt.Printf("\n%s%s✖ ERROR:%s %s\n\n", red, bold, reset, msg)
 }
 
 func recordsToTable(records []*engine.Record) ([]string, [][]string) {

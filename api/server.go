@@ -31,7 +31,7 @@ func (s *Server) registerRoutes() {
 
 // Start begins listening for HTTP requests.
 func (s *Server) Start() error {
-	fmt.Printf("GoDB HTTP server listening on %s\n", s.addr)
+	fmt.Printf("dinoDB HTTP server listening on %s\n", s.addr)
 	return http.ListenAndServe(s.addr, s.mux)
 }
 

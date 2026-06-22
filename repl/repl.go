@@ -39,9 +39,9 @@ func (r *REPL) Run() {
 
 	for {
 		if r.tx != nil {
-			fmt.Print("godb (tx)> ")
+			fmt.Print("dinoDB (tx)> ")
 		} else {
-			fmt.Print("godb> ")
+			fmt.Print("dinoDB> ")
 		}
 
 		if !scanner.Scan() {
@@ -279,7 +279,7 @@ func (r *REPL) handleDotCommand(cmd string) (exit bool) {
 		fmt.Println("Shell Commands:")
 		fmt.Println("  .tables    -- list all tables")
 		fmt.Println("  .help      -- show this help message")
-		fmt.Println("  .exit      -- quit GoDB")
+		fmt.Println("  .exit      -- quit dinoDB")
 		fmt.Println()
 
 	case ".tables":

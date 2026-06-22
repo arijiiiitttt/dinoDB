@@ -1,7 +1,7 @@
 
 <p align="center">
   <a>
-    <img alt="dinoDB logo" src="public/dinoDB.png" width="136">
+    <img alt="dinoDB logo" src="public/dinoDB.png" width="134">
   </a>
 </p>
 
